@@ -18,9 +18,7 @@ public class Todo {
 
   private boolean done;
 
-  public Todo(final String title,
-              final String description,
-              final boolean done) {
+  public Todo(final String title, final String description, final boolean done) {
 
     this.title = title;
     this.description = description;
