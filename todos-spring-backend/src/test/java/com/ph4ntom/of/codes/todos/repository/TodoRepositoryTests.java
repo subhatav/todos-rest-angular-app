@@ -10,6 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -20,6 +23,8 @@ class TodoRepositoryTests {
 
   @Container @ServiceConnection
   static final MongoDBContainer dbContainer = new MongoDBContainer("mongo:5.0.18-focal");
+
+  final Pageable pageable = PageRequest.of(0, 3);
 
   final Todo todo1 = new Todo("Todo #1AD", "Description #1AD", true);
   final Todo todo2 = new Todo("Todo #2BC", "Description #2BC", false);
@@ -48,16 +53,22 @@ class TodoRepositoryTests {
   @Test
   void shouldReturnTodos_WhichAreDone() {
 
-    final Iterable<Todo> doneTodos = todoRepository.findByDone(true);
+    final Page<Todo> doneTodos = todoRepository.findByDone(true, pageable);
 
-    assertThat(doneTodos).hasSize(2).containsExactlyInAnyOrder(todo1, todo3);
+    assertThat(doneTodos.getNumber()).isZero();
+    assertThat(doneTodos.getTotalPages()).isEqualTo(1);
+    assertThat(doneTodos.getTotalElements()).isEqualTo(2);
+    assertThat(doneTodos.getContent()).hasSize(2).containsOnlyOnce(todo1, todo3);
   }
 
   @Test
   void shouldReturnTodos_WithTitleContainingString() {
 
-    final Iterable<Todo> matchedTodos = todoRepository.findByTitleContaining("AD");
+    final Page<Todo> matchedTodos = todoRepository.findByTitleContaining("AD", pageable);
 
-    assertThat(matchedTodos).hasSize(2).containsExactlyInAnyOrder(todo1, todo3);
+    assertThat(matchedTodos.getNumber()).isZero();
+    assertThat(matchedTodos.getTotalPages()).isEqualTo(1);
+    assertThat(matchedTodos.getTotalElements()).isEqualTo(2);
+    assertThat(matchedTodos.getContent()).hasSize(2).containsOnlyOnce(todo1, todo3);
   }
 }

@@ -4,14 +4,14 @@ import com.ph4ntom.of.codes.todos.exception.NoResourcesException;
 import com.ph4ntom.of.codes.todos.exception.ResourceNotFoundException;
 import com.ph4ntom.of.codes.todos.model.Todo;
 import com.ph4ntom.of.codes.todos.repository.TodoRepository;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Supplier;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 // @CrossOrigin(origins = "http://localhost:8081")
 @RestController
@@ -27,6 +27,19 @@ public class TodoController {
     return () -> new ResourceNotFoundException("Todo with [id=" + id + "] is not found!");
   }
 
+  private static Map<String, Object> getResponseTodos(final List<Todo> foundTodos,
+                                                      final Page<Todo> pageTodos) {
+
+    final Map<String, Object> responseTodos = new HashMap<>();
+
+    responseTodos.put("todos", foundTodos);
+    responseTodos.put("currentPage", pageTodos.getNumber());
+    responseTodos.put("totalItems", pageTodos.getTotalElements());
+    responseTodos.put("totalPages", pageTodos.getTotalPages());
+
+    return responseTodos;
+  }
+
   @GetMapping("/todos/{id}")
   @ResponseStatus(HttpStatus.OK)
   public Todo readSpecificTodo(final @PathVariable("id") String id) {
@@ -36,25 +49,35 @@ public class TodoController {
 
   @GetMapping("/todos/done")
   @ResponseStatus(HttpStatus.OK)
-  public List<Todo> readDoneTodos() {
+  public Map<String, Object> readDoneTodos(final @RequestParam(defaultValue = "0") int page,
+                                           final @RequestParam(defaultValue = "3") int size) {
 
-    final List<Todo> doneTodos = todoRepository.findByDone(true);
+    final Pageable pageable = PageRequest.of(page, size);
+    final Page<Todo> pageTodos = todoRepository.findByDone(true, pageable);
 
-    if (!doneTodos.isEmpty()) return doneTodos;
+    final List<Todo> doneTodos = pageTodos.getContent();
+
+    if (!doneTodos.isEmpty()) return getResponseTodos(doneTodos, pageTodos);
     else throw new NoResourcesException("List of done Todos is empty!");
   }
 
   @GetMapping("/todos")
   @ResponseStatus(HttpStatus.OK)
-  public List<Todo> readAllTodos(final @RequestParam
-                    (required = false) String title) {
+  public Map<String, Object> readAllTodos(final @RequestParam(required = false) String title,
+                                          final @RequestParam(defaultValue = "0") int page,
+                                          final @RequestParam(defaultValue = "3") int size) {
 
-    final List<Todo> allTodos = new ArrayList<>();
+    final List<Todo> allTodos;
+    final Page<Todo> pageTodos;
 
-    if (Objects.isNull(title)) allTodos.addAll(todoRepository.findAll());
-    else allTodos.addAll(todoRepository.findByTitleContaining(title));
+    final Pageable pageable = PageRequest.of(page, size);
 
-    if (!allTodos.isEmpty()) return allTodos;
+    if (Objects.isNull(title)) pageTodos = todoRepository.findAll(pageable);
+    else pageTodos = todoRepository.findByTitleContaining(title, pageable);
+
+    allTodos = pageTodos.getContent();
+
+    if (!allTodos.isEmpty()) return getResponseTodos(allTodos, pageTodos);
     else throw new NoResourcesException("List of Todos is empty!");
   }
 
@@ -62,8 +85,7 @@ public class TodoController {
   @ResponseStatus(HttpStatus.CREATED)
   public Todo createNewTodo(final @RequestBody Todo freshTodo) {
 
-    return todoRepository.save(new Todo(freshTodo.getTitle(),
-                          freshTodo.getDescription(), false));
+    return todoRepository.save(new Todo(freshTodo.getTitle(), freshTodo.getDescription(), false));
   }
 
   @PutMapping("/todos/{id}")
@@ -71,8 +93,7 @@ public class TodoController {
   public Todo updateSpecificTodo(final @PathVariable("id") String id,
                                  final @RequestBody Todo freshTodo) {
 
-    final Todo updatedTodo = todoRepository.findById(id).orElseThrow
-                                           (getNotFoundException(id));
+    final Todo updatedTodo = todoRepository.findById(id).orElseThrow(getNotFoundException(id));
 
     updatedTodo.setTitle(freshTodo.getTitle());
     updatedTodo.setDescription(freshTodo.getDescription());
