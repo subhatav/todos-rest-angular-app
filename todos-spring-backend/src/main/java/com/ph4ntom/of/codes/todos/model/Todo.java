@@ -4,10 +4,9 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Getter
-@Setter
-@ToString
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Document(collection = "todos")
 public class Todo {
 
@@ -18,7 +17,9 @@ public class Todo {
 
   private boolean done;
 
-  public Todo(final String title, final String description, final boolean done) {
+  public Todo(final String title,
+              final String description,
+              final boolean done) {
 
     this.title = title;
     this.description = description;

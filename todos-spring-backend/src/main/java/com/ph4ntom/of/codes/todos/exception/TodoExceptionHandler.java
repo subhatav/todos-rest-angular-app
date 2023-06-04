@@ -11,16 +11,17 @@ public class TodoExceptionHandler {
 
   @ExceptionHandler({ResourceNotFoundException.class, NoResourcesException.class})
   @ResponseStatus(value = HttpStatus.NOT_FOUND)
-  public ErrorMessage runtimeExceptionHandler(final RuntimeException runtimeException,
+  public ErrorMessage handleSpecificException(final RuntimeException exception,
                                               final WebRequest request) {
 
-    return new ErrorMessage(HttpStatus.NOT_FOUND.value(), runtimeException.getMessage(),
+    return new ErrorMessage(HttpStatus.NOT_FOUND.value(), exception.getMessage(),
                             request.getDescription(false));
   }
 
-  @ExceptionHandler(Exception.class)
+  @ExceptionHandler(RuntimeException.class)
   @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-  public ErrorMessage globalExceptionHandler(final Exception exception, final WebRequest request) {
+  public ErrorMessage handleGlobalException(final RuntimeException exception,
+                                            final WebRequest request) {
 
     return new ErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR.value(),
                exception.getMessage(), request.getDescription(false));
