@@ -1,0 +1,49 @@
+<div class="list row">
+
+  <div class="col-md-8">
+
+    <div class="input-group mb-3">
+
+      <input class="form-control" placeholder="Search by title"
+             type="text" [(ngModel)]="title" />
+
+      <div class="input-group-append">
+
+        <button class="btn btn-outline-secondary"
+                type="button" (click)="searchTitle()">
+          Search
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="col-md-6">
+
+    <h4>Todos List</h4>
+
+    <ul class="list-group">
+
+      <li class="list-group-item" *ngFor="let todo of todos; let i = index"
+          [class.active]="i == currentIndex" (click)="setActive(todo, i)">
+        {{ todo.title }}
+      </li>
+
+    </ul>
+
+    <button class="m-3 btn btn-sm btn-danger" (click)="removeAll()">
+      Remove All
+    </button>
+
+  </div>
+
+  <div class="col-md-6">
+
+    <app-todo-details [viewMode]="true" [currentTodo]="currentTodo">
+    </app-todo-details>
+
+  </div>
+
+</div>
