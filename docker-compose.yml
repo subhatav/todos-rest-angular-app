@@ -1,0 +1,52 @@
+version: '3.9'
+
+services:
+
+  mongo-database:
+
+    image: mongo:5.0.18-focal
+    container_name: mongo-database
+
+    restart: unless-stopped
+
+    env_file: ./.env
+    ports:
+      - $MONGO_LOCAL_PORT:$MONGO_DOCKER_PORT
+
+    volumes:
+      - ./todos-mongo-database:/data/db
+
+  spring-backend:
+
+    depends_on:
+      - mongo-database
+
+    build: ./todos-spring-backend
+
+    image: todos-spring-backend
+    container_name: spring-backend
+
+    restart: on-failure
+
+    env_file: ./.env
+    ports:
+      - $SPRING_LOCAL_PORT:$SPRING_DOCKER_PORT
+
+    stdin_open: true
+    tty: true
+
+  angular-frontend:
+
+    depends_on:
+      - spring-backend
+
+    build: ./todos-angular-frontend
+
+    image: todos-angular-frontend
+    container_name: angular-frontend
+
+    restart: always
+
+    env_file: ./.env
+    ports:
+      - $ANGULAR_LOCAL_PORT:$ANGULAR_DOCKER_PORT
