@@ -56,7 +56,8 @@
               "browserTarget": "todos-angular-frontend:build:production"
             },
             "development": {
-              "browserTarget": "todos-angular-frontend:build:development"
+              "browserTarget": "todos-angular-frontend:build:development",
+              "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"

@@ -21,5 +21,5 @@ LABEL version="1.0.0"
 LABEL author="Ph4nToM"
 LABEL maintainer="subhatav@gmail.com"
 
-COPY nginx.conf /etc/nginx/nginx.conf:ro
+COPY /nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /todos-app/dist/todos-angular-frontend /usr/share/nginx/html
