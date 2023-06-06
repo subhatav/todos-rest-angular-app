@@ -13,11 +13,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-// @CrossOrigin(origins = "http://localhost:8081")
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(value = "*")
 @RequestMapping("/rest")
+@CrossOrigin(origins = "*")
 public class TodoController {
 
   private final TodoRepository todoRepository;
@@ -33,6 +32,7 @@ public class TodoController {
     final Map<String, Object> responseTodos = new HashMap<>();
 
     responseTodos.put("todos", foundTodos);
+
     responseTodos.put("currentPage", pageTodos.getNumber());
     responseTodos.put("totalItems", pageTodos.getTotalElements());
     responseTodos.put("totalPages", pageTodos.getTotalPages());

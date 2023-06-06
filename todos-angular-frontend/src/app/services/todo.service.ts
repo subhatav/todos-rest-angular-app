@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 
 import { Todo } from '../models/todo.model';
 
-const baseUrl = 'http://localhost:8080/rest/todos';
+const apiUrl = '/rest/todos';
 
 @Injectable({
   providedIn: 'root',
@@ -14,30 +14,30 @@ export class TodoService {
   constructor(private http: HttpClient) {}
 
   readSpecific(id: any): Observable<Todo> {
-    return this.http.get<Todo>(`${baseUrl}/${id}`);
+    return this.http.get<Todo>(`${apiUrl}/${id}`);
   }
 
   readAll(params: any): Observable<any> {
-    return this.http.get<any>(baseUrl, { params });
+    return this.http.get<any>(apiUrl, { params });
   }
 
   /* readByTitle(title: any): Observable<Todo[]> {
-    return this.http.get<Todo[]>(`${baseUrl}?title=${title}`);
+    return this.http.get<Todo[]>(`${apiUrl}?title=${title}`);
   } */
 
   createNew(data: any): Observable<any> {
-    return this.http.post(baseUrl, data);
+    return this.http.post(apiUrl, data);
   }
 
   updateSpecific(id: any, data: any): Observable<any> {
-    return this.http.put(`${baseUrl}/${id}`, data);
+    return this.http.put(`${apiUrl}/${id}`, data);
   }
 
   deleteSpecific(id: any): Observable<any> {
-    return this.http.delete(`${baseUrl}/${id}`);
+    return this.http.delete(`${apiUrl}/${id}`);
   }
 
   deleteAll(): Observable<any> {
-    return this.http.delete(baseUrl);
+    return this.http.delete(apiUrl);
   }
 }

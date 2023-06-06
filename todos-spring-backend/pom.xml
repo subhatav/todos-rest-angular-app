@@ -18,7 +18,6 @@
 
     <name>Todos Application</name>
     <description>Manage all your todos!</description>
-    <!--<url></url>-->
 
     <properties>
         <java.version>17</java.version>
