@@ -1,0 +1,32 @@
+<div>
+
+    <div class="submit-form">
+
+        <div *ngIf="!submitted">
+
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input class="form-control" id="title" name="title"
+                       required [(ngModel)]="todo.title" type="text" />
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <input class="form-control" id="description" name="description"
+                       required [(ngModel)]="todo.description" type="text" />
+            </div>
+
+            <button class="btn btn-success" (click)="saveFresh()">Submit</button>
+
+        </div>
+
+        <div *ngIf="submitted">
+
+            <h4>Todo was submitted successfully!</h4>
+            <button class="btn btn-success" (click)="prepareFresh()">Add</button>
+
+        </div>
+
+    </div>
+
+</div>

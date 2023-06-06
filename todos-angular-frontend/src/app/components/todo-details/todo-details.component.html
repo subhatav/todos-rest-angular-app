@@ -1,0 +1,85 @@
+<div *ngIf="viewMode; else editable">
+
+    <div *ngIf="currentTodo.id">
+
+        <h4>Todo</h4>
+
+        <div>
+            <label><strong>Title:</strong></label>
+            {{ currentTodo.title }}
+        </div>
+        <div>
+            <label><strong>Description:</strong></label>
+            {{ currentTodo.description }}
+        </div>
+        <div>
+            <label><strong>Status:</strong></label>
+            {{ currentTodo.done ? "Done" : "Pending" }}
+        </div>
+
+        <a class="badge badge-warning" routerLink="/todos/{{ currentTodo.id }}">
+            Edit
+        </a>
+
+    </div>
+
+    <div *ngIf="!currentTodo">
+        <br /><p>Please click on a Todo...</p>
+    </div>
+
+</div>
+
+<ng-template #editable>
+
+    <div *ngIf="currentTodo.id" class="edit-form">
+
+        <h4>Todo</h4>
+
+        <form>
+
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" class="form-control"
+                       id="title" name="title"
+                       [(ngModel)]="currentTodo.title" />
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <input type="text" class="form-control" 
+                       id="description" name="description"
+                       [(ngModel)]="currentTodo.description" />
+            </div>
+
+            <div class="form-group">
+                <label><strong>Status:</strong></label>
+                {{ currentTodo.done ? "Done" : "Pending" }}
+            </div>
+
+        </form>
+
+        <button class="badge badge-primary mr-2"
+                *ngIf="currentTodo.done" (click)="updateStatus(false)">
+            Mark as Pending
+        </button>
+        <button class="badge badge-primary mr-2"
+                *ngIf="!currentTodo.done" (click)="updateStatus(true)">
+            Mark as Done
+        </button>
+
+        <button class="badge badge-danger mr-2" (click)="removeSpecific()">
+            Delete
+        </button>
+
+        <button class="badge badge-success mb-2" type="submit" (click)="updateData()">
+            Update
+        </button>
+
+        <p>{{ message }}</p>
+
+    </div>
+
+    <div *ngIf="!currentTodo.id">
+        <br /><p>Cannot access this Todo...</p>
+    </div>
+
+</ng-template>
