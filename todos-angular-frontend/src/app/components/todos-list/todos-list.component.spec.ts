@@ -10,8 +10,10 @@ describe('TodosListComponent', () => {
     TestBed.configureTestingModule({
       declarations: [TodosListComponent],
     });
+
     fixture = TestBed.createComponent(TodosListComponent);
     component = fixture.componentInstance;
+
     fixture.detectChanges();
   });
 

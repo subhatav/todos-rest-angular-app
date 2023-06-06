@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Todo } from '../../models/todo.model';
@@ -9,7 +9,7 @@ import { TodoService } from '../../services/todo.service';
   templateUrl: './todo-details.component.html',
   styleUrls: ['./todo-details.component.css'],
 })
-export class TodoDetailsComponent {
+export class TodoDetailsComponent implements OnInit {
   @Input() viewMode = false;
 
   @Input() currentTodo: Todo = {

@@ -17,13 +17,13 @@ export class TodoService {
     return this.http.get<Todo>(`${baseUrl}/${id}`);
   }
 
-  readAll(): Observable<Todo[]> {
-    return this.http.get<Todo[]>(baseUrl);
+  readAll(params: any): Observable<any> {
+    return this.http.get<any>(baseUrl, { params });
   }
 
-  readByTitle(title: any): Observable<Todo[]> {
+  /* readByTitle(title: any): Observable<Todo[]> {
     return this.http.get<Todo[]>(`${baseUrl}?title=${title}`);
-  }
+  } */
 
   createNew(data: any): Observable<any> {
     return this.http.post(baseUrl, data);

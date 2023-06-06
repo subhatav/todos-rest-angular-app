@@ -10,8 +10,10 @@ describe('AddTodoComponent', () => {
     TestBed.configureTestingModule({
       declarations: [AddTodoComponent],
     });
+
     fixture = TestBed.createComponent(AddTodoComponent);
     component = fixture.componentInstance;
+
     fixture.detectChanges();
   });
 

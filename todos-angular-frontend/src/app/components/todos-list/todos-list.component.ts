@@ -11,15 +11,38 @@ import { TodoService } from '../../services/todo.service';
 export class TodosListComponent {
   title = '';
 
-  todos?: Todo[];
+  todos: Todo[] = [];
   currentTodo: Todo = {};
 
   currentIndex = -1;
+
+  page = 1;
+  count = 0;
+
+  pageSize = 3;
+  pageSizes = [3, 6, 9];
 
   constructor(private todoService: TodoService) {}
 
   ngOnInit(): void {
     this.retrieveAll();
+  }
+
+  getParams(searchTitle: string, page: number, pageSize: number): any {
+    let params: any = {};
+
+    if (searchTitle) {
+      params[`title`] = searchTitle;
+    }
+
+    if (page) {
+      params[`page`] = page - 1;
+    }
+    if (pageSize) {
+      params[`size`] = pageSize;
+    }
+
+    return params;
   }
 
   setActive(todo: Todo, index: number): void {
@@ -34,33 +57,46 @@ export class TodosListComponent {
     this.currentIndex = -1;
   }
 
+  handlePageChange(event: number): void {
+    this.page = event;
+
+    this.retrieveAll();
+  }
+
+  handlePageSizeChange(event: any): void {
+    this.pageSize = event.target.value;
+    this.page = 1;
+
+    this.retrieveAll();
+  }
+
   retrieveAll(): void {
-    this.todoService.readAll().subscribe({
+    const params = this.getParams(this.title, this.page, this.pageSize);
+
+    this.todoService.readAll(params).subscribe({
       next: (data) => {
+        const { todos, totalItems } = data;
+
+        this.todos = todos;
+        this.count = totalItems;
+
         console.log(data);
-        this.todos = data;
       },
       error: (exc) => console.error(exc),
     });
   }
 
   searchTitle(): void {
-    this.currentTodo = {};
-    this.currentIndex = -1;
+    this.page = 1;
 
-    this.todoService.readByTitle(this.title).subscribe({
-      next: (data) => {
-        console.log(data);
-        this.todos = data;
-      },
-      error: (exc) => console.error(exc),
-    });
+    this.retrieveAll();
   }
 
   removeAll(): void {
     this.todoService.deleteAll().subscribe({
       next: (response) => {
         console.log(response);
+
         this.refreshList();
       },
       error: (exc) => console.error(exc),

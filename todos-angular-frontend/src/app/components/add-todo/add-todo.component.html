@@ -6,14 +6,14 @@
 
             <div class="form-group">
                 <label for="title">Title</label>
-                <input class="form-control" id="title" type="text"
-                       required [(ngModel)]="todo.title" name="title" />
+                <input class="form-control" id="title" name="title"
+                       required [(ngModel)]="todo.title" type="text" />
             </div>
 
             <div class="form-group">
                 <label for="description">Description</label>
                 <input class="form-control" id="description" name="description"
-                       required [(ngModel)]="todo.description" />
+                       required [(ngModel)]="todo.description" type="text" />
             </div>
 
             <button class="btn btn-success" (click)="saveFresh()">Submit</button>
